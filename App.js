@@ -47,7 +47,9 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text style={styles.h1}>Todo List</Text>
-
+      <Text style={{ color: "white" }}>
+        Total number of todos: {todoList.length}
+      </Text>
       <ScrollView style={{ width: "100%" }}>
         {todoList.map((todo) => (
           <View style={styles.listContainer} key={todo.key}>
