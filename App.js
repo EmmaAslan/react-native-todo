@@ -7,9 +7,11 @@ import {
   TextInput,
   Pressable,
   ScrollView,
-  SafeAreaView,
+  Platform,
 } from "react-native";
-import Todos from "./Todos";
+import AddIcon from "react-native-vector-icons/Feather";
+import CheckIcon from "react-native-vector-icons/Feather";
+import TrashIcon from "react-native-vector-icons/FontAwesome5";
 
 export default function App() {
   const [text, setText] = useState("");
@@ -37,7 +39,7 @@ export default function App() {
     setTodoList(
       todoList.map((todo) => {
         if (todo.key === id) todo.complete = !todo.complete;
-        return todoList;
+        return todo;
       })
     );
   };
@@ -45,6 +47,32 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text style={styles.h1}>Todo List</Text>
+
+      <ScrollView style={{ width: "100%" }}>
+        {todoList.map((todo) => (
+          <View style={styles.listContainer} key={todo.key}>
+            {todo.complete ? (
+              <Text style={styles.completeItem}>{todo.label}</Text>
+            ) : (
+              <Text style={styles.todoItem}>{todo.label}</Text>
+            )}
+            <View style={styles.buttons}>
+              <Pressable
+                style={styles.button}
+                onPress={() => handleCompleted(todo.key)}
+              >
+                <CheckIcon name="check" size={30} style={styles.buttonText} />
+              </Pressable>
+              <Pressable
+                style={styles.button}
+                onPress={() => handleDeleteTodo(todo.key)}
+              >
+                <TrashIcon name="trash" size={25} style={styles.buttonText} />
+              </Pressable>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
 
       <Text style={styles.h2}>New todo</Text>
       <View style={styles.inputButton}>
@@ -55,21 +83,9 @@ export default function App() {
           placeholder={"New todo"}
         />
         <Pressable style={styles.addButton} onPress={() => handleAddTodo()}>
-          <Text style={styles.addButtonText}>Add</Text>
+          <AddIcon name="plus" size={30} style={styles.addButtonText} />
         </Pressable>
       </View>
-
-      <ScrollView style={{ width: "100%" }}>
-        {todoList.map((todo) => (
-          <Todos
-            text={todo.label}
-            key={todo.key}
-            complete={todo.complete}
-            setComplete={() => handleCompleted(todo.key)}
-            delete={() => handleDeleteTodo(todo.key)}
-          />
-        ))}
-      </ScrollView>
     </View>
   );
 }
@@ -77,17 +93,22 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    padding: 10,
+    padding: 20,
     flex: 1,
     justifyContent: "center",
     backgroundColor: "rgb(149, 230, 196)",
+    fontFamily: "sans-serif-medium",
   },
   h1: {
-    fontSize: 25,
+    fontSize: 30,
+    letterSpacing: 1,
+    fontWeight: "bold",
     color: "rgb(250, 250, 250)",
   },
   h2: {
     fontSize: 20,
+    fontWeight: "bold",
+    letterSpacing: 1,
     color: "rgb(250, 250, 250)",
     paddingBottom: 15,
     paddingTop: 25,
@@ -101,6 +122,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 1,
     padding: 10,
+    backgroundColor: "rgb(250, 250, 250)",
     borderColor: "rgb(250, 250, 250)",
   },
   addButton: {
@@ -109,9 +131,43 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgb(250, 250, 250)",
     backgroundColor: "rgb(141, 219, 186)",
-    elevation: 3,
+    elevation: 1,
   },
   addButtonText: {
+    color: "rgb(250, 250, 250)",
+    paddingHorizontal: 10,
+  },
+  listContainer: {
+    marginTop: 8,
+    flexDirection: "row",
+    borderColor: "#FFFFFF",
+    backgroundColor: "rgb(141, 219, 186)",
+    borderWidth: 1,
+    width: "100%",
+    justifyContent: "space-between",
+    fontFamily: "sans-serif-medium",
+  },
+  todoItem: {
+    padding: 12,
+    fontSize: 17,
+    color: "white",
+  },
+  completeItem: {
+    padding: 12,
+    fontSize: 17,
+    color: "rgb(225, 225, 225)",
+    textDecorationLine: "line-through",
+    textDecorationColor: "rgb(123, 167, 149)",
+  },
+  buttons: {
+    flexDirection: "row",
+  },
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 6,
+  },
+  buttonText: {
     color: "rgb(250, 250, 250)",
     paddingHorizontal: 10,
   },
